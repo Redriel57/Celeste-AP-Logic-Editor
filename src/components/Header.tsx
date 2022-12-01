@@ -9,7 +9,7 @@ const icons = {
   export: (<FontAwesomeIcon icon={faUpload} />),
   load: (<FontAwesomeIcon icon={faFolderOpen} />),
   new: (<FontAwesomeIcon icon={faFile} />),
-  bars: (<FontAwesomeIcon icon={faBars} />),
+  settings: (<FontAwesomeIcon icon={faBars} />),
   save: (<FontAwesomeIcon icon={faFloppyDisk} />)
 };
 
@@ -21,16 +21,25 @@ const Header = ({ setDarkMode, darkMode, setState, parseFile }: HeaderInterface)
     file.text().then(text => parseFile(text));
   }
 
-  const buttonStyle = 'h-2/3 p-4 aspect-square bg-slate-900 dark:bg-slate-300 text-slate-300 dark:text-slate-900 rounded-md items-center';
+  const headerButtons = [
+    {func: () => setDarkMode(!darkMode), icon: darkMode ? icons.light : icons.dark},
+    {func: () => setState(State.Editor), icon: icons.new},
+    {func: () => fileInput.current?.click(), icon: icons.load},
+    {func: () => 0, icon: icons.save},
+    {func: () => 0, icon: icons.export},
+    {func: () => setState(State.Settings), icon: icons.settings}
+  ]
+
+  let key = 0;
+
   return (
     <div className="bg-slate-400 dark:bg-slate-800 flex flex-row flex-nowrap w-full h-full">
-      <div className='border-slate-500 dark:border-slate-900 flex flex-row flex-nowrap w-1/3 items-center justify-around h-full border-r-2'>
-        <button className={buttonStyle} onClick={() => setDarkMode(!darkMode)}>{darkMode ? icons.light : icons.dark}</button>
-        <button className={buttonStyle} onClick={() => 0}>{icons.new}</button>
-        <button className={buttonStyle} onClick={() => fileInput.current?.click()}>{icons.load}</button>
-        <button className={buttonStyle} onClick={() => 0}>{icons.save}</button>
-        <button className={buttonStyle} onClick={() => 0}>{icons.export}</button>
-        <button className={buttonStyle} onClick={() => setState(State.Settings)}>{icons.bars}</button>
+      <div className='border-slate-500 dark:border-slate-900 flex flex-row flex-nowrap w-96 items-center justify-around h-full border-r-2'>
+        {headerButtons.map(({func, icon}) => 
+          <button key={key++}
+            className='h-12 w-12 flex justify-center p-4 bg-slate-900 dark:bg-slate-300 text-slate-300 dark:text-slate-900 rounded-md items-center'
+            onClick={func}>{icon}</button>
+        )}
         <input className="hidden" accept=".apclogic" type="file" ref={fileInput} onChange={(e) => openFile(e.target.files?.item(0) ?? null)} />
       </div>
       <div className='w-1/2'>

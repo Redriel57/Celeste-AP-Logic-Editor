@@ -21,5 +21,12 @@ interface FieldInterface {
   defaultChecked: boolean;
 }
 
+interface ToolInterface {
+  func: () => void;
+  icon: JSX.Element;
+  tooltip: string;
+  sideOpen: boolean;
+}
+
 export { State };
-export type { HeaderInterface, SettingsJSON, FieldInterface };
+export type { HeaderInterface, SettingsJSON, FieldInterface, ToolInterface };
