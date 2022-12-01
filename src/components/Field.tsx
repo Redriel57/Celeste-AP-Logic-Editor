@@ -1,0 +1,13 @@
+import { FieldInterface } from '../utils/types';
+
+const Field = ({ defaultChecked, onChange, name }: FieldInterface): JSX.Element => {
+  
+  return (
+    <div className="flex flex-row flex-nowrap items-center justify-center content-center w-full">
+      <input defaultChecked={defaultChecked} onChange={onChange} type="checkbox" />
+      <label>{name}</label>
+    </div>
+  )
+}
+
+export default Field;
