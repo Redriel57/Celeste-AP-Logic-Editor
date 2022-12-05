@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
-import { State, HeaderInterface, Area } from '../utils/types';
+import { HeaderInterface } from '../utils/interfaces';
+import Area from '../utils/data/Area';
+import { State } from '../utils/enums';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun, faUpload, faFile, faBars, faFloppyDisk, faFolderOpen } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,13 +15,19 @@ const icons = {
   save: (<FontAwesomeIcon icon={faFloppyDisk} />)
 };
 
-const Header = ({ setDarkMode, darkMode, setState, parseFile, setArea }: HeaderInterface): JSX.Element => {
+const Header = ({ setDarkMode, darkMode, setState, setArea }: HeaderInterface): JSX.Element => {
   const fileInput = useRef<HTMLInputElement>(null);
   
   const openFile = (file: File | null): void => {
     if (file === null) return;
-    file.text().then(text => parseFile(text));
+    file.text().then(text => {
+      const newArea = Area.fromString(text);
+      
+      if (newArea instanceof Area) setArea(newArea);
+    });
   }
+
+
 
   const headerButtons = [
     {func: () => setDarkMode(!darkMode), icon: darkMode ? icons.light : icons.dark},

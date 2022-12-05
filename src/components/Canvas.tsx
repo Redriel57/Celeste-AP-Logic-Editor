@@ -1,17 +1,25 @@
-import { CanvasProps, ToolState, Node, Edge } from '../utils/types';
 import React, { useState, useRef, useEffect } from 'react';
+
+import { CanvasProps, Coordinate } from '../utils/interfaces';
+import { ToolState } from '../utils/enums';
+import Node from '../utils/data/Node';
+import Edge from '../utils/data/Edge';
+
 import RoomComponent from './RoomComponent';
 import NodeComponent from './NodeComponent';
 import EdgeComponent from './EdgeComponent';
+import RoomPrompt from './RoomPrompt';
 
 const DRAG_INERTIA: number = 20;
 const ZOOM_FACTOR: number = 0.1;
 
-const Canvas = (canvasProps: CanvasProps): JSX.Element => {
-  const { tool, setSelected, selected, currentArea, setContextMenuShown, summonContextMenu } = canvasProps;
+const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown, summonContextMenu }: CanvasProps): JSX.Element => {
+
   const [scale, setScale] = useState<number>(1);
   const [{ dragPosX, dragPosY }, setDragPos] = useState<{ dragPosX: number; dragPosY: number }>({ dragPosX: 0, dragPosY: 0 });
+  const [clickPos, setClickPos] = useState<Coordinate>({ x: 0, y: 0 });
   const [overflow, setOverflow] = useState<string>('scroll');
+  const [promptShown, setPromptShown] = useState<boolean>(false);
 
   const divOuterRef = useRef<HTMLDivElement>(null);
   const divInnerRef = useRef<HTMLDivElement>(null);
@@ -66,24 +74,24 @@ const Canvas = (canvasProps: CanvasProps): JSX.Element => {
     switch (tool) {
       case ToolState.Node: {
         if (!selected) return;
-        const currentRoom = currentArea.getRoomByID(parseInt(selected.split(' ')[0]));
+        const currentRoom = currentArea.getRoomByName(selected.split(' ')[0]);
         if (!currentRoom) return;
 
-        const id = currentRoom.newNodeID();
-        const newNode = new Node(`node_${id}`, id, dragPosX, dragPosY, dx, dy, currentRoom.id);
-        currentRoom.nodes.push(newNode);
+        const name = ""; // TODO POP UP TO NAME NODE
+
+        currentRoom.addNode(new Node(name, dragPosX, dragPosY, dx, dy, currentRoom.name));
         break;
       }
       case ToolState.Edge: {
-        const start = getElementAt(dragPosX, dragPosY)?.split(' ');
-        const end = getElementAt(event.pageX, event.pageY)?.split(' ');
+        const start = currentArea.getElementAt({ x: dragPosX, y: dragPosY })?.split(' ');
+        const end = currentArea.getElementAt({ x: event.pageX, y: event.pageY })?.split(' ');
         if (!start || !end) return;
 
-        const currentRoom = currentArea.getRoomByID(parseInt(start[0]));
+        const currentRoom = currentArea.getRoomByName(start[0]);
         if (!currentRoom) return;
 
-        const startingNode = currentRoom.getNodeByID(parseInt(start[1]));
-        const endingNode = currentRoom.getNodeByID(parseInt(end[1]));
+        const startingNode = currentRoom.getNodeByName(start[1]);
+        const endingNode = currentRoom.getNodeByName(end[1]);
         if (!startingNode || !endingNode) return;
 
         const newEdge = new Edge(startingNode, endingNode);
@@ -99,31 +107,32 @@ const Canvas = (canvasProps: CanvasProps): JSX.Element => {
   };
 
   const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+    setClickPos({ x: event.pageX, y: event.pageY });
+
     if (event.detail === 1) {
-      setSelected(getElementAt(event.pageX, event.pageY));
+      setSelected(currentArea.getElementAt({ x: event.pageX, y: event.pageY }));
       setContextMenuShown(false);
     }
     else {
       resizeToItem(0);
       setSelected("");
+      switch (tool) {
+        case ToolState.Room:
+          if (selected) return;
+          setPromptShown(true);
+          break;
+        case ToolState.Node:
+          if (selected) return;
+          setPromptShown(true);
+          break;
+      }
     }
   };
 
   const onRightClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     event.preventDefault();
-    summonContextMenu(event.pageX, event.pageY);
+    summonContextMenu({ x: event.pageX, y: event.pageY });
   };
-
-  const getElementAt = (x: number, y: number): string | null => {
-    // const list = currentArea.rooms.map((room: Room) => {
-    //   const nodes = room.nodes.map((node: Node) => [`${room.id} ${node.id}`, [node.pos, node.pos.x + node.size.x, node.pos.y + node.size.y]]);
-    //   return nodes;
-    // }).reduce((total, amount) => total.concat(amount), []);
-
-
-
-    return null;
-  }
 
   let keyRoom = 0;
   let keyNode = 0;
@@ -131,7 +140,8 @@ const Canvas = (canvasProps: CanvasProps): JSX.Element => {
 
   return (
     <div ref={divOuterRef}>
-      <div className="select-none"
+      { promptShown && <RoomPrompt currentArea={currentArea} coordinates={{ x: clickPos.x, y: clickPos.y }} />}
+      <div
         onClick={onClick}
         onContextMenu={onRightClick}
         onDragStart={onDragStart}
@@ -141,9 +151,15 @@ const Canvas = (canvasProps: CanvasProps): JSX.Element => {
         ref={divInnerRef}
         draggable
       >
-        {currentArea.rooms.map((room) => <RoomComponent key={keyRoom++} room={room} />)}
-        {currentArea.getAllNodes().map((node) => <NodeComponent key={keyNode++} node={node} room={currentArea.getRoomByID(node.roomID)} active={tool === ToolState.Node} />)}
-        {currentArea.getAllEdges().map((edge) => <EdgeComponent key={keyEdge++} edge={edge} />)}
+        <div className='z-40'>
+          {currentArea.rooms.map((room) => <RoomComponent key={keyRoom++} room={room} active={tool === ToolState.Room} />)}
+        </div>
+        <div className='z-30'>
+          {currentArea.getAllNodes().map((node) => <NodeComponent key={keyNode++} node={node} room={currentArea.getRoomByName(node.roomName)} active={tool === ToolState.Node} />)}
+        </div>
+        <div className='z-20'>
+          {currentArea.getAllEdges().map((edge) => <EdgeComponent key={keyEdge++} edge={edge} />)}
+        </div>
       </div>
     </div>
   );

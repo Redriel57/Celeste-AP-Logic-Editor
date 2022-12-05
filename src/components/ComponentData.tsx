@@ -1,4 +1,4 @@
-import { ComponentDataInterface } from '../utils/types';
+import { ComponentDataInterface } from '../utils/interfaces';
 
 const ComponentData = ({ selected }: ComponentDataInterface): JSX.Element => {
 

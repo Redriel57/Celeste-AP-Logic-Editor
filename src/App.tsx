@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Settings from './components/Settings';
 import Editor from './components/Editor';
-import { State, Area } from './utils/types'
+
+import { State } from './utils/enums'
+import Area from './utils/data/Area';
+import RoomPrompt from './components/RoomPrompt';
 // import settings from './settings.json';
 
 const App = (): JSX.Element => {
@@ -19,20 +22,17 @@ const App = (): JSX.Element => {
       default:
         return (
           <div className='flex justify-center items-center h-full w-full bg-slate-200 dark:bg-slate-900'>
-            <label className="text-slate-900 dark:text-slate-200">Create or Open a project</label>
+            <RoomPrompt currentArea={area} coordinates={{ x: 0, y: 0 }} />
+            <label className="text-slate-900 dark:text-slate-200 text-xl font-extrabold">Create or Open a project</label>
           </div>
         )
     }
   }
 
-  const parseFile = (text: string): void => {
-
-  }
-
   return (
-    <div className={`max-h-full max-w-full overflow-hidden ${darkMode && "dark"}`}>
+    <div className={`max-h-full max-w-full overflow-hidden select-none ${darkMode && "dark"}`}>
       <div className='h-16 w-full border-b-2 border-slate-500 dark:border-slate-900'>
-        <Header setDarkMode={setDarkMode} darkMode={darkMode} setState={setState} parseFile={parseFile} setArea={setArea} />
+        <Header setDarkMode={setDarkMode} darkMode={darkMode} setState={setState} setArea={setArea} />
       </div>
       <div className='h-[calc(100vh-64px)] w-full'>
         {getComponent()}

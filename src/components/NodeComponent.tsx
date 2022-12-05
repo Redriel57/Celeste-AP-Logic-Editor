@@ -1,4 +1,5 @@
-import { Node, Room } from '../utils/types';
+import Node from '../utils/data/Node';
+import Room from '../utils/data/Room';
 import { useState } from 'react';
 
 const NodeComponent = ({ room, node, active }: { room: Room; node: Node; active: boolean }): JSX.Element => {

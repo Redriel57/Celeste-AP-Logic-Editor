@@ -1,12 +1,15 @@
 import { useState, useRef } from 'react';
-import Draggable from 'react-draggable';
+import { faArrowLeft, faArrowRight, faLocationDot, faTicket, faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Tool from './Tool';
 import Canvas from './Canvas';
 import ComponentData from './ComponentData';
 import ContextMenu from './ContextMenu';
-import { ToolState, Area } from '../utils/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight, faLocationDot, faTicket, faArrowRightToBracket } from '@fortawesome/free-solid-svg-icons';
+
+import { Coordinate } from '../utils/interfaces';
+import { ToolState } from '../utils/enums';
+import Area from '../utils/data/Area';
 
 const icons = { 
   left: (<FontAwesomeIcon icon={faArrowLeft} />),
@@ -29,7 +32,7 @@ const Editor = ({ area }: { area: Area }): JSX.Element => {
     setTool(tool === newToolState ? ToolState.None : newToolState);
   }
 
-  const summonContextMenu = (x: number, y: number): void => {
+  const summonContextMenu = ({ x, y }: Coordinate): void => {
     console.log("ping");
     if (contextMenu.current) {
       contextMenu.current.style.top = `${x}`;
@@ -47,9 +50,9 @@ const Editor = ({ area }: { area: Area }): JSX.Element => {
   let key = 0;
 
   return (
-    <div className="h-full w-full flex flex-row flex-nowrap">
+    <div className="h-full w-full flex flex-row flex-nowrap -z-10">
       {contextMenuShown && (
-        <div className={`absolute h-96 w-48 top-0 left-0 bg-slate-100 dark:bg-slate-800 rounded-sm border-2 border-slate-200 dark:border-slate-900`} ref={contextMenu}>
+        <div className={`-z-20 absolute h-96 w-48 top-0 left-0 bg-slate-100 dark:bg-slate-800 rounded-sm border-2 border-slate-200 dark:border-slate-900`} ref={contextMenu}>
           <ContextMenu />
         </div>)
       }
@@ -66,10 +69,8 @@ const Editor = ({ area }: { area: Area }): JSX.Element => {
             onClick={() => setSideOpen(!sideOpen)}>{sideOpen ? icons.left : icons.right}</button>
         </div>
       </div>
-      <div className={`bg-slate-100 dark:bg-slate-900 ${sideOpen ? "w-[calc(100vw-192px)]" : "w-[calc(100vw-96px)]"} h-full`}>
-        <Draggable bounds="parent">
-          <Canvas currentArea={area} tool={tool} setSelected={setSelected} selected={selected} setContextMenuShown={setContextMenuShown} summonContextMenu={summonContextMenu}/>
-        </Draggable>
+      <div className={`z-50 bg-slate-100 dark:bg-slate-900 ${sideOpen ? "w-[calc(100vw-192px)]" : "w-[calc(100vw-96px)]"} h-full`}>
+        <Canvas currentArea={area} tool={tool} setSelected={setSelected} selected={selected} setContextMenuShown={setContextMenuShown} summonContextMenu={summonContextMenu}/>
       </div>
     </div>
   )

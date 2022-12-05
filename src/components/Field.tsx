@@ -1,4 +1,4 @@
-import { FieldInterface } from '../utils/types';
+import { FieldInterface } from '../utils/interfaces';
 
 const Field = ({ defaultChecked, onChange, name }: FieldInterface): JSX.Element => {
   

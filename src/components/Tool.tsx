@@ -1,4 +1,4 @@
-import { ToolInterface } from '../utils/types';
+import { ToolInterface } from '../utils/interfaces';
 
 const Tool = ({ func, icon, tooltip, sideOpen, toggled }: ToolInterface): JSX.Element => {
 
