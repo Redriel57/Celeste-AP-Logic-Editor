@@ -1,7 +1,8 @@
 import { ToolInterface } from '../utils/interfaces';
 
 const Tool = ({ func, icon, tooltip, sideOpen, toggled }: ToolInterface): JSX.Element => {
-
+  console.log("render Tool");
+  
   return (
     <div className='flex flex-row flex-nowrap justify-between items-center'>
       <button

@@ -5,7 +5,6 @@ import Editor from './components/Editor';
 
 import { State } from './utils/enums'
 import Area from './utils/data/Area';
-import RoomPrompt from './components/RoomPrompt';
 // import settings from './settings.json';
 
 const App = (): JSX.Element => {
@@ -22,7 +21,6 @@ const App = (): JSX.Element => {
       default:
         return (
           <div className='flex justify-center items-center h-full w-full bg-slate-200 dark:bg-slate-900'>
-            <RoomPrompt currentArea={area} coordinates={{ x: 0, y: 0 }} />
             <label className="text-slate-900 dark:text-slate-200 text-xl font-extrabold">Create or Open a project</label>
           </div>
         )

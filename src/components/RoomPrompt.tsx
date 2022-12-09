@@ -4,6 +4,8 @@ import Room from "../utils/data/Room";
 import { Coordinate } from "../utils/interfaces";
 
 const RoomPrompt = ({ currentArea, coordinates }: { currentArea: Area; coordinates: Coordinate; }): JSX.Element => {
+  console.log("render RoomPrompt");
+  
   const [name, setName] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [validation, setValidation] = useState<boolean>(false);

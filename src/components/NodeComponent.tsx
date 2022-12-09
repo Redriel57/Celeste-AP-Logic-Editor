@@ -3,6 +3,8 @@ import Room from '../utils/data/Room';
 import { useState } from 'react';
 
 const NodeComponent = ({ room, node, active }: { room: Room; node: Node; active: boolean }): JSX.Element => {
+  console.log("render NodeComponent");
+
   const [moving, setMoving] = useState<boolean>(false);
   const [resizing, setResizing] = useState<boolean>(false);
 

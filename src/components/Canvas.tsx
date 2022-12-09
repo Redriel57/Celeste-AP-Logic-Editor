@@ -14,12 +14,14 @@ const DRAG_INERTIA: number = 20;
 const ZOOM_FACTOR: number = 0.1;
 
 const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown, summonContextMenu }: CanvasProps): JSX.Element => {
+  console.log("render Canvas");
 
   const [scale, setScale] = useState<number>(1);
-  const [{ dragPosX, dragPosY }, setDragPos] = useState<{ dragPosX: number; dragPosY: number }>({ dragPosX: 0, dragPosY: 0 });
+  // const [{ offsetX, offsetY }, setOffset] = useState<{ offsetX: number; offsetY: number; }>({ offsetX: 0, offsetY: 0 });
+  const [{ dragPosX, dragPosY }, setDragPos] = useState<{ dragPosX: number; dragPosY: number; }>({ dragPosX: 0, dragPosY: 0 });
   const [clickPos, setClickPos] = useState<Coordinate>({ x: 0, y: 0 });
   const [overflow, setOverflow] = useState<string>('scroll');
-  const [promptShown, setPromptShown] = useState<boolean>(false);
+  const [roomPromptShown, setRoomPromptShown] = useState<boolean>(false);
 
   const divOuterRef = useRef<HTMLDivElement>(null);
   const divInnerRef = useRef<HTMLDivElement>(null);
@@ -119,11 +121,11 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
       switch (tool) {
         case ToolState.Room:
           if (selected) return;
-          setPromptShown(true);
+          setRoomPromptShown(true);
           break;
         case ToolState.Node:
           if (selected) return;
-          setPromptShown(true);
+          setRoomPromptShown(true);
           break;
       }
     }
@@ -139,8 +141,8 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
   let keyEdge = 0;
 
   return (
-    <div ref={divOuterRef}>
-      { promptShown && <RoomPrompt currentArea={currentArea} coordinates={{ x: clickPos.x, y: clickPos.y }} />}
+    <div className="w-full h-full" ref={divOuterRef}>
+      { roomPromptShown && <RoomPrompt currentArea={currentArea} coordinates={{ x: clickPos.x, y: clickPos.y }} />}
       <div
         onClick={onClick}
         onContextMenu={onRightClick}

@@ -3,6 +3,8 @@ import Room from '../utils/data/Room';
 import { Coordinate } from "../utils/interfaces";
 
 const RoomComponent = ({ room, active }: { room: Room; active: boolean; }): JSX.Element => {
+  console.log("render RoomComponent");
+
   const [moving, setMoving] = useState<boolean>(false);
   const [startMove, setStartMove] = useState<Coordinate>({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState<Coordinate>({ x: 0, y: 0 });

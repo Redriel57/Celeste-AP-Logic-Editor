@@ -16,6 +16,8 @@ const icons = {
 };
 
 const Header = ({ setDarkMode, darkMode, setState, setArea }: HeaderInterface): JSX.Element => {
+  console.log("render Header");
+
   const fileInput = useRef<HTMLInputElement>(null);
   
   const openFile = (file: File | null): void => {

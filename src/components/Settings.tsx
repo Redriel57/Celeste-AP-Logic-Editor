@@ -6,6 +6,7 @@
 // import settings from '../settings.json';
 
 const Settings = (): JSX.Element => {
+  console.log("render Settings");
   /*const [defaultTheme, setDefaultTheme] = useState<string>(settings.defaultTheme);
 
   const updateSettingsJSON = (): void => {

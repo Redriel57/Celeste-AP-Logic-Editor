@@ -20,6 +20,8 @@ const icons = {
 };
 
 const Editor = ({ area }: { area: Area }): JSX.Element => {
+  console.log("render Editor");
+
   const [sideOpen, setSideOpen] = useState<boolean>(true);
   // Canvas Data
   const [tool, setTool] = useState<ToolState>(ToolState.None);
@@ -70,7 +72,7 @@ const Editor = ({ area }: { area: Area }): JSX.Element => {
         </div>
       </div>
       <div className={`z-50 bg-slate-100 dark:bg-slate-900 ${sideOpen ? "w-[calc(100vw-192px)]" : "w-[calc(100vw-96px)]"} h-full`}>
-        <Canvas currentArea={area} tool={tool} setSelected={setSelected} selected={selected} setContextMenuShown={setContextMenuShown} summonContextMenu={summonContextMenu}/>
+        <Canvas currentArea={area} tool={tool} setSelected={setSelected} selected={selected} setContextMenuShown={setContextMenuShown} summonContextMenu={summonContextMenu} />
       </div>
     </div>
   )
