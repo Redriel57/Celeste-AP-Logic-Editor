@@ -25,8 +25,12 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
 
   const divOuterRef = useRef<HTMLDivElement>(null);
   const divInnerRef = useRef<HTMLDivElement>(null);
+  const divRoomRef = useRef<HTMLDivElement>(null);
+  const divNodeRef = useRef<HTMLDivElement>(null);
+  const divEdgeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // if (divRoomRef.current) ;
     const { innerHeight, innerWidth } = window;
 
     const scrollDown = (currentArea.size.y - innerHeight) / 2;
@@ -104,9 +108,9 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
     }
   }
 
-  const resizeToItem = (item: number): void => {
+  // const resizeToItem = (item: number): void => {
 
-  };
+  // };
 
   const onClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
     setClickPos({ x: event.pageX, y: event.pageY });
@@ -114,19 +118,14 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
     if (event.detail === 1) {
       setSelected(currentArea.getElementAt({ x: event.pageX, y: event.pageY }));
       setContextMenuShown(false);
+      setRoomPromptShown(false);
     }
     else {
-      resizeToItem(0);
-      setSelected("");
-      switch (tool) {
-        case ToolState.Room:
-          if (selected) return;
-          setRoomPromptShown(true);
-          break;
-        case ToolState.Node:
-          if (selected) return;
-          setRoomPromptShown(true);
-          break;
+      // resizeToItem(0);
+      if (tool === ToolState.Room) {
+        if (selected) return;
+        setSelected(null);
+        setRoomPromptShown(true);
       }
     }
   };
@@ -142,8 +141,10 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
 
   return (
     <div className="w-full h-full" ref={divOuterRef}>
-      { roomPromptShown && <RoomPrompt currentArea={currentArea} coordinates={{ x: clickPos.x, y: clickPos.y }} />}
-      <div
+      {roomPromptShown && <div>
+        <RoomPrompt currentArea={currentArea} coordinates={{ x: clickPos.x, y: clickPos.y }} closeMenu={() => setRoomPromptShown(false)} />
+      </div>}
+      <div className='h-full w-full'
         onClick={onClick}
         onContextMenu={onRightClick}
         onDragStart={onDragStart}
@@ -153,13 +154,13 @@ const Canvas = ({ tool, setSelected, selected, currentArea, setContextMenuShown,
         ref={divInnerRef}
         draggable
       >
-        <div className='z-40'>
+        <div className='z-40' ref={divRoomRef}>
           {currentArea.rooms.map((room) => <RoomComponent key={keyRoom++} room={room} active={tool === ToolState.Room} />)}
         </div>
-        <div className='z-30'>
+        <div className='z-30' ref={divNodeRef}>
           {currentArea.getAllNodes().map((node) => <NodeComponent key={keyNode++} node={node} room={currentArea.getRoomByName(node.roomName)} active={tool === ToolState.Node} />)}
         </div>
-        <div className='z-20'>
+        <div className='z-20' ref={divEdgeRef}>
           {currentArea.getAllEdges().map((edge) => <EdgeComponent key={keyEdge++} edge={edge} />)}
         </div>
       </div>

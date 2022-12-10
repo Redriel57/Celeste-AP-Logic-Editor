@@ -3,26 +3,22 @@ import Area from "../utils/data/Area";
 import Room from "../utils/data/Room";
 import { Coordinate } from "../utils/interfaces";
 
-const RoomPrompt = ({ currentArea, coordinates }: { currentArea: Area; coordinates: Coordinate; }): JSX.Element => {
+const RoomPrompt = ({ currentArea, coordinates, closeMenu }: { currentArea: Area; coordinates: Coordinate; closeMenu: () => void; }): JSX.Element => {
   console.log("render RoomPrompt");
   
   const [name, setName] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [validation, setValidation] = useState<boolean>(false);
 
-  const nameInput = useRef<HTMLInputElement>(null);
-  const fileInput = useRef<HTMLInputElement>(null);
   const validateButton = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (nameInput.current) nameInput.current.disabled = validation;
-    if (fileInput.current) fileInput.current.disabled = validation;
-    if (validateButton.current) validateButton.current.disabled = validation;
-  }, [validation]);
+    if (!validateButton.current) return;
+    
+    validateButton.current.disabled = !!selectedFile && (name !== '') && !currentArea.hasRoom(name);
+  }, [currentArea, name, selectedFile])
 
   const validate = (): void => {
-    setValidation(true);
-    if (!!selectedFile && name !== '' && !currentArea.hasRoom(name)) {
+    if (!!selectedFile) {
       const image = new FileReader();
       image.onload = () => {
         var img = new Image();
@@ -31,13 +27,11 @@ const RoomPrompt = ({ currentArea, coordinates }: { currentArea: Area; coordinat
           const room = new Room(name, coordinates.x, coordinates.y, img.width, img.height, img);
           currentArea.addRoom(room);
         };
-        img.onerror = () => setValidation(false);
 
         img.src = image.result?.toString() ?? "";
       }
-      image.onerror = () => setValidation(false);
-      image.onabort = () => setValidation(false);
       image.readAsDataURL(selectedFile);
+      closeMenu()
     }
   }
 
@@ -64,7 +58,6 @@ const RoomPrompt = ({ currentArea, coordinates }: { currentArea: Area; coordinat
         <button
           className="bg-transparent font-semibold py-2 px-4 border border-slate-400 dark:border-slate-800 rounded"
           onClick={validate}
-          disabled={!!selectedFile && (name !== '') && !currentArea.hasRoom(name)}
         >Create Room</button>
       </div>
     </div>
