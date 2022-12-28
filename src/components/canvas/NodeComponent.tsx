@@ -1,8 +1,8 @@
-import Node from '../utils/data/Node';
-import Room from '../utils/data/Room';
+import Node from '../../utils/data/Node';
+import Room from '../../utils/data/Room';
 import { useState } from 'react';
 
-const NodeComponent = ({ room, node, active }: { room: Room; node: Node; active: boolean }): JSX.Element => {
+const NodeComponent = ({ room, node, active, selected }: { room: Room; node: Node; active: boolean; selected: boolean; }): JSX.Element => {
   console.log("render NodeComponent");
 
   const [moving, setMoving] = useState<boolean>(false);

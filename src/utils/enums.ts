@@ -30,4 +30,11 @@ enum Errors {
   InvalidFormat
 }
 
-export { State, CanvasState, ToolState, Difficulty, Tricks, Errors };
+enum Zoom {
+  In,
+  Out,
+  Reset,
+  Fit
+}
+
+export { State, CanvasState, ToolState, Difficulty, Tricks, Errors, Zoom };

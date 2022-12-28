@@ -4,7 +4,7 @@ import Edge from './Edge';
 import { Errors } from "../enums";
 
 class Room extends LocatedItem {
-  imgPath: HTMLImageElement;
+  image: HTMLImageElement;
   nodes: Array<Node>;
   edges: Array<Edge>;
 
@@ -32,11 +32,11 @@ class Room extends LocatedItem {
     super(name, x, y, width, height);
     this.nodes = [];
     this.edges = [];
-    this.imgPath = imgPath;
+    this.image = imgPath;
   }
 
   addNode(node: Node): Errors {
-    if (this.getNodeByName(node.name)) return Errors.Duplicate;
+    if (this.hasNode(node.name)) return Errors.Duplicate;
     
     this.nodes.push(node);
     return Errors.None;
@@ -52,7 +52,7 @@ class Room extends LocatedItem {
   }
 
   addEdge(edge: Edge): Errors {
-    if (this.getEdge(edge.originName, edge.targetName)) return Errors.Duplicate;
+    if (this.hasEdge(edge.originName, edge.targetName)) return Errors.Duplicate;
     
     this.edges.push(edge);
     return Errors.None;
@@ -72,9 +72,7 @@ class Room extends LocatedItem {
   }
 
   hasNode(name: string): boolean {
-    const node = this.nodes.filter((node) => node.name === name);
-
-    return node.length !== 0;
+    return this.getNodeByName(name) !== null;
   }
 
   getEdge(origin: string, target: string): Edge | null {
@@ -85,14 +83,20 @@ class Room extends LocatedItem {
   }
 
   hasEdge(origin: string, target: string): boolean {
-    const edge = this.edges.filter((edge) => edge.originName === origin && edge.targetName === target);
-    
-    return edge.length !== 0;
+    return this.getEdge(origin, target) !== null;
   }
 
-  toJSON(): string {
-    const obj = { ...this, edges: this.edges.map((edge: Edge) => edge.toJSON()), nodes: this.nodes.map((node: Node) => node.toJSON()) };
+  toJSON(complete: boolean = false): string {
+    const obj = complete
+      ? { ...this, edges: this.edges.map((edge: Edge) => edge.toJSON()), nodes: this.nodes.map((node: Node) => node.toJSON()) }
+      : {};
     return JSON.stringify({ value: obj, space: 2 })
+  }
+  
+  async getImageFile(): Promise<File> {
+    const response = await fetch(this.image.src);
+    const blob = await response.blob();
+    return new File([blob], this.name, { type: "png" });
   }
 }
 

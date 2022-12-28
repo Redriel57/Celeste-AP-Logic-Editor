@@ -11,6 +11,7 @@ interface HeaderInterface {
   darkMode: boolean;
   setState: (state: State) => void;
   setArea: (area: Area) => void;
+  currentArea: Area;
 }
 
 interface SettingsJSON {
@@ -36,12 +37,26 @@ interface CanvasProps {
   setSelected: (item: string | null) => void;
   selected: string | null;
   currentArea: Area;
-  setContextMenuShown: (isShown: boolean) => void;
-  summonContextMenu: (coordinate: Coordinate) => void;
 }
 
 interface ComponentDataInterface {
   selected: string | null;
 }
 
-export type { HeaderInterface, SettingsJSON, FieldInterface, ToolInterface, CanvasProps, ComponentDataInterface, Coordinate, Difficulty };
+interface FileTree {
+  name: string;
+  content: File | FileTree[];
+}
+
+interface SubMenuData {
+  subMenuName: string;
+  fields: FieldData[];
+}
+
+interface FieldData {
+  name: string;
+  enabled: boolean;
+  onClick: () => void;
+}
+
+export type { HeaderInterface, SettingsJSON, FieldInterface, ToolInterface, CanvasProps, ComponentDataInterface, Coordinate, Difficulty, FileTree, SubMenuData };

@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import Room from '../utils/data/Room';
-import { Coordinate } from "../utils/interfaces";
+import Room from '../../utils/data/Room';
+import { Coordinate } from "../../utils/interfaces";
 
-const RoomComponent = ({ room, active }: { room: Room; active: boolean; }): JSX.Element => {
+const RoomComponent = ({ room, active, selected }: { room: Room; active: boolean; selected: boolean; }): JSX.Element => {
   console.log("render RoomComponent");
 
   const [moving, setMoving] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const RoomComponent = ({ room, active }: { room: Room; active: boolean; }): JSX.
   }
 
   return (
-    <div className={`resizable bg-node-color absolute top-[${room.pos.y}px] left-[${room.pos.x}px]`}>
+    <div className={`resizable bg-node-color border-blue-600 absolute top-[${room.pos.y}px] left-[${room.pos.x}px] ${selected ? "border-2" : "border-0"}`}>
       {active && <div className='w-full h-full border-2 border-white box-border'
         ref={movableRef}
         onMouseDown={(e) => onMouseDown(e)}

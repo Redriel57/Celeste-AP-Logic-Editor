@@ -41,8 +41,7 @@ class Area {
   }
 
   hasRoom(name: string): boolean {
-    const room = this.rooms.filter((room) => room.name === name);
-    return room.length !== 0;
+    return this.getRoomByName(name) !== null;
   }
 
   getElementAt({ x, y }: Coordinate): string | null {
@@ -62,8 +61,10 @@ class Area {
     return this.rooms.reduce<Edge[]>((n, r) => n.concat(r.edges), []);
   }
 
-  toJSON(): string {
-    const obj = { ...this, rooms: this.rooms.map((room: Room) => room.toJSON()) }
+  toJSON(complete: boolean = false): string {
+    const obj = complete
+      ? { ...this, rooms: this.rooms.map((room: Room) => room.toJSON(true)) }
+      : {};
     return JSON.stringify({ value: obj, space: 2 });
   }
 }

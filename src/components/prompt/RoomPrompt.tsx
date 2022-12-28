@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import Area from "../utils/data/Area";
-import Room from "../utils/data/Room";
-import { Coordinate } from "../utils/interfaces";
+import Area from "../../utils/data/Area";
+import Room from "../../utils/data/Room";
+import { Coordinate } from "../../utils/interfaces";
 
-const RoomPrompt = ({ currentArea, coordinates, closeMenu }: { currentArea: Area; coordinates: Coordinate; closeMenu: () => void; }): JSX.Element => {
+const RoomPrompt = ({ currentArea, coordinates, closeMenu, addRoom }: { currentArea: Area; coordinates: Coordinate; closeMenu: () => void; addRoom: (room: Room) => void; }): JSX.Element => {
   console.log("render RoomPrompt");
   
   const [name, setName] = useState<string>("");
@@ -25,7 +25,7 @@ const RoomPrompt = ({ currentArea, coordinates, closeMenu }: { currentArea: Area
  
         img.onload = () => {
           const room = new Room(name, coordinates.x, coordinates.y, img.width, img.height, img);
-          currentArea.addRoom(room);
+          addRoom(room);
         };
 
         img.src = image.result?.toString() ?? "";
@@ -36,7 +36,7 @@ const RoomPrompt = ({ currentArea, coordinates, closeMenu }: { currentArea: Area
   }
 
   return (
-    <div className="flex flex-col flex-nowrap justify-between absolute top-10 left-10 w-64 h-64 rounded-lg border-2 border-slate-400 bg-slate-300 dark:border-slate-800 dark:bg-slate-700">
+    <div className="flex flex-col flex-nowrap justify-between absolute top-30 left-30 w-64 h-64 rounded-lg border-2 border-slate-400 bg-slate-300 dark:border-slate-800 dark:bg-slate-700">
       <div className="flex justify-center w-full border-b-2 border-slate-400 dark:border-slate-800">
         <label className="font-bold text-lg">New Room</label>
       </div>

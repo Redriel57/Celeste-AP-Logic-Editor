@@ -1,4 +1,4 @@
-import Edge from "../utils/data/Edge";
+import Edge from "../../utils/data/Edge";
 
 const EdgeComponent = ({ edge }: { edge: Edge }): JSX.Element => {
   console.log("render EdgeComponent");
